@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Image Generator</title>
+    <title>Company AI Image Generator</title>
     <style>
         * {
             box-sizing: border-box;
@@ -25,17 +25,34 @@
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             text-align: center;
+            border: 1px solid #334155;
+        }
+        .badge {
+            background-color: #38bdf8;
+            color: #0f172a;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 10px;
         }
         h1 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #38bdf8;
+            margin: 0 0 10px 0;
+            font-size: 26px;
+            color: white;
+        }
+        p.subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 25px;
         }
         input[type="text"] {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             border: 2px solid #334155;
             border-radius: 8px;
             background-color: #0f172a;
@@ -53,7 +70,7 @@
             background-color: #38bdf8;
             color: #0f172a;
             border: none;
-            padding: 12px;
+            padding: 14px;
             border-radius: 8px;
             font-size: 16px;
             font-weight: bold;
@@ -70,89 +87,139 @@
         }
         .result-box {
             margin-top: 25px;
-            min-height: 200px;
+            min-height: 300px;
             display: flex;
             justify-content: center;
             align-items: center;
             border: 2px dashed #334155;
             border-radius: 8px;
+            background-color: #0f172a;
             position: relative;
             overflow: hidden;
         }
         #output-image {
             max-width: 100%;
-            max-height: 400px;
+            height: auto;
             display: none;
             border-radius: 6px;
         }
-        .loading-text {
+        .loading-box {
             display: none;
             color: #94a3b8;
+            font-size: 15px;
+        }
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #38bdf8;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        #translation-note {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 10px;
+            text-align: left;
+            display: none;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🎨 AI Image Generator</h1>
-        <p style="color: #94a3b8; font-size: 14px; margin-top: -10px; margin-bottom: 20px;">พิมพ์ Prompt เป็นภาษาอังกฤษ เพื่อผลลัพธ์ที่ดีที่สุด</p>
+        <div class="badge">Internal Tool</div>
+        <h1>Enterprise AI Image Generator</h1>
+        <p class="subtitle">พิมพ์ไอเดียหรือสิ่งที่คุณต้องการ (รองรับทั้งภาษาไทยและอังกฤษ) ระบบจะเสกรูปให้ทันที</p>
         
-        <input type="text" id="prompt-input" placeholder="เช่น: a futuristic city, cyberpunk style, 4k...">
-        <button id="generate-btn" onclick="generateImage()">สร้างรูปภาพ ✨</button>
+        <input type="text" id="prompt-input" placeholder="เช่น: แก้วกาแฟมินิมอลตั้งอยู่บนโต๊ะทำงานตอนเช้า แสงแดดส่องอ่อนๆ">
+        <button id="generate-btn" onclick="startProcess()">สร้างรูปภาพสำหรับธุรกิจ ✨</button>
+
+        <div id="translation-note"></div>
 
         <div class="result-box">
-            <span id="placeholder-text" style="color: #64748b;">รูปภาพจะแสดงตรงนี้</span>
-            <span id="loading-status" class="loading-text">กำลังวาดรูปให้คุณ... รอสักครู่ ⏳</span>
+            <span id="placeholder-text" style="color: #64748b;">รูปภาพที่สร้างจะแสดงตรงนี้</span>
+            
+            <div id="loading-status" class="loading-box">
+                <div class="spinner"></div>
+                <span id="loading-text">กำลังประมวลผลคำสั่ง...</span>
+            </div>
+            
             <img id="output-image" alt="AI Generated Image">
         </div>
     </div>
 
     <script>
-        function generateImage() {
+        async function startProcess() {
             const promptInput = document.getElementById('prompt-input').value.trim();
             const generateBtn = document.getElementById('generate-btn');
             const outputImage = document.getElementById('output-image');
             const placeholderText = document.getElementById('placeholder-text');
             const loadingStatus = document.getElementById('loading-status');
+            const loadingText = document.getElementById('loading-text');
+            const translationNote = document.getElementById('translation-note');
 
             if (promptInput === "") {
-                alert("กรุณาพิมพ์ Prompt ก่อนครับ!");
+                alert("กรุณาพิมพ์สิ่งที่คุณต้องการสร้างก่อนครับ!");
                 return;
             }
 
-            // เปิดสถานะกำลังโหลด
+            // ล็อกปุ่มกดป้องกันการกดซ้ำ
             generateBtn.disabled = true;
-            generateBtn.innerText = "กำลังสร้างรูป...";
+            generateBtn.innerText = "กำลังดำเนินการ...";
             placeholderText.style.display = "none";
             outputImage.style.display = "none";
             loadingStatus.style.display = "block";
+            translationNote.style.display = "none";
 
-            // เข้ารหัสข้อความเพื่อให้ปลอดภัยต่อการส่งผ่าน URL (แก้ปัญหาเว้นวรรค)
-            const encodedPrompt = encodeURIComponent(promptInput);
-            
-            // ใช้ API ของ Pollinations AI (ฟรี ไม่ต้องใช้คีย์)
-            // ใส่เลขสุ่ม (seed) ด้านหลัง เพื่อให้รูปที่ได้ไม่ซ้ำกันทุกครั้งที่กด
-            const randomSeed = Math.floor(Math.random() * 100000);
-            const imageUrl = `https://image.pollinations.ai/p/${encodedPrompt}?width=500&height=500&seed=${randomSeed}&nologo=true`;
+            let finalPrompt = promptInput;
 
-            // โหลดรูปภาพ
+            // ตรวจสอบว่าผู้ใช้พิมพ์ภาษาไทยมาหรือไม่ ถ้าใช่ให้ทำการแปลภาษา
+            const isThai = /[ก-์]/.test(promptInput);
+            if (isThai) {
+                loadingText.innerText = "กำลังแปลภาษาไทยเป็นสากลเพื่อ AI... 🌐";
+                try {
+                    // ใช้ API ฟรีในการแปลภาษาไทย -> อังกฤษ
+                    const translateUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=th&tl=en&dt=t&q=${encodeURIComponent(promptInput)}`;
+                    const response = await fetch(translateUrl);
+                    const data = await response.json();
+                    finalPrompt = data[0][0][0]; // ดึงข้อความภาษาอังกฤษที่แปลแล้ว
+                    
+                    translationNote.innerText = `💡 แปลเป็นอังกฤษให้ AI: "${finalPrompt}"`;
+                    translationNote.style.display = "block";
+                } catch (error) {
+                    console.log("Translation error, using original text.");
+                }
+            }
+
+            loadingText.innerText = "กำลังวาดรูปให้คุณ... รอสักครู่ 🎨";
+
+            // เตรียม URL สำหรับเจนรูป (ใช้ Pollinations AI ดึงภาพขนาดใหญ่ 1080x1080 เหมาะกับงานบริษัท)
+            const randomSeed = Math.floor(Math.random() * 999999);
+            const imageUrl = `https://image.pollinations.ai/p/${encodeURIComponent(finalPrompt)}?width=1080&height=1080&seed=${randomSeed}&nologo=true&enhance=true`;
+
+            // ส่งคำสั่งโหลดรูปภาพ
             outputImage.src = imageUrl;
 
-            // เมื่อรูปภาพโหลดเสร็จแล้ว
+            // เมื่อ AI วาดเสร็จและโหลดภาพสำเร็จ
             outputImage.onload = function() {
                 loadingStatus.style.display = "none";
                 outputImage.style.display = "block";
                 generateBtn.disabled = false;
-                generateBtn.innerText = "สร้างรูปภาพ ✨";
+                generateBtn.innerText = "สร้างรูปภาพสำหรับธุรกิจ ✨";
             };
 
-            // กรณีเกิดข้อผิดพลาด
+            // กรณีระบบขัดข้อง
             outputImage.onerror = function() {
-                alert("เกิดข้อผิดพลาดในการสร้างรูปภาพ กรุณาลองใหม่อีกครั้ง");
+                alert("การเชื่อมต่อระบบ AI ขัดข้อง กรุณาลองใหม่อีกครั้ง");
                 loadingStatus.style.display = "none";
                 placeholderText.style.display = "block";
+                translationNote.style.display = "none";
                 generateBtn.disabled = false;
-                generateBtn.innerText = "สร้างรูปภาพ ✨";
+                generateBtn.innerText = "สร้างรูปภาพสำหรับธุรกิจ ✨";
             };
         }
     </script>
