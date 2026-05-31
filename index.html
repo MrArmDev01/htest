@@ -3,36 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fast Company AI (Uncensored)</title>
+    <title>Internal Media Search (Uncensored)</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: #0b0f19; color: #f1f5f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { background-color: #111827; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 550px; text-align: center; border: 1px solid #1f2937; }
-        h1 { font-size: 24px; color: #10b981; margin-bottom: 5px; }
+        .container { background-color: #111827; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 700px; text-align: center; border: 1px solid #1f2937; }
+        h1 { font-size: 24px; color: #3b82f6; margin-bottom: 5px; }
         p.desc { color: #9ca3af; font-size: 13px; margin-bottom: 20px; }
         
         .form-group { text-align: left; margin-bottom: 15px; }
         label { display: block; font-size: 14px; color: #9ca3af; margin-bottom: 5px; }
         input { width: 100%; padding: 12px 16px; border: 2px solid #374151; border-radius: 8px; background-color: #030712; color: white; font-size: 15px; outline: none; transition: 0.3s; }
-        input:focus { border-color: #10b981; }
+        input:focus { border-color: #3b82f6; }
         
-        button { width: 100%; background-color: #10b981; color: #030712; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
-        button:hover { background-color: #059669; }
+        button { width: 100%; background-color: #3b82f6; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        button:hover { background-color: #2563eb; }
         button:disabled { background-color: #4b5563; cursor: not-allowed; color: #9ca3af; }
         
-        .result-box { margin-top: 25px; min-height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px dashed #374151; border-radius: 8px; background-color: #030712; padding: 15px; position: relative; }
-        #output-image { max-width: 100%; height: auto; display: none; border-radius: 6px; margin-top: 10px; }
-        #status { color: #9ca3af; font-size: 14px; }
+        /* พื้นที่แสดงผลลัพธ์ */
+        .result-area { margin-top: 25px; text-align: left; }
+        #status { text-align: center; color: #9ca3af; font-size: 14px; margin-bottom: 15px; }
         
-        .spinner { border: 4px solid rgba(255,255,255,0.1); width: 30px; height: 30px; border-radius: 50%; border-left-color: #10b981; animation: spin 1s linear infinite; display: none; margin-bottom: 10px; }
+        /* สไตล์การ์ดแสดงชื่อหนัง/อนิเมะ */
+        .media-card { display: flex; background: #1f2937; margin-bottom: 15px; border-radius: 8px; overflow: hidden; border: 1px solid #374151; transition: 0.2s; }
+        .media-card:hover { transform: translateY(-2px); border-color: #3b82f6; }
+        .media-poster { width: 100px; min-width: 100px; height: 150px; background-color: #374151; object-fit: cover; }
+        .media-info { padding: 15px; display: flex; flex-direction: column; justify-content: center; }
+        .media-title { font-size: 18px; font-weight: bold; color: white; margin: 0 0 5px 0; }
+        .media-type { display: inline-block; background: #3b82f6; color: white; font-size: 11px; padding: 2px 8px; border-radius: 4px; width: fit-content; margin-bottom: 8px; font-weight: bold; }
+        .media-overview { font-size: 13px; color: #9ca3af; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin: 0; }
+
+        .spinner { border: 4px solid rgba(255,255,255,0.1); width: 30px; height: 30px; border-radius: 50%; border-left-color: #3b82f6; animation: spin 1s linear infinite; display: none; margin: 0 auto 10px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>⚡ Fast Private AI</h1>
-        <p class="desc">ระบบเจนเนอเรตภาพความเร็วสูง ไร้ข้อจำกัด (สำหรับคนในบริษัทเท่านั้น)</p>
+        <h1>🔍 Enterprise Media Search</h1>
+        <p class="desc">ระบบค้นหาข้อมูลอนิเมะและภาพยนตร์แบบไร้ข้อจำกัด (Internal วงในเฉพาะบริษัท)</p>
         
         <div class="form-group">
             <label for="company-key">รหัสผ่านยืนยันสิทธิ์บริษัท (Company Passkey):</label>
@@ -40,16 +49,16 @@
         </div>
 
         <div class="form-group">
-            <label for="prompt-input">คำสั่งสร้างรูปภาพ (Prompt):</label>
-            <input type="text" id="prompt-input" placeholder="พิมพ์ไอเดียที่ต้องการได้อย่างอิสระ...">
+            <label for="search-input">คีย์เวิร์ดที่ต้องการค้นหา (พิมพ์แนว, ชื่อเรื่อง, หรือคำเฉพาะได้อิสระ):</label>
+            <input type="text" id="search-input" placeholder="เช่น: Isekai, Cyberpunk, ย้อนเวลา...">
         </div>
 
-        <button id="generate-btn" onclick="startGeneration()">เริ่มต้นสร้างรูปภาพทันที 🚀</button>
+        <button id="search-btn" onclick="startSearch()">ค้นหาข้อมูลทันที 🚀</button>
 
-        <div class="result-box">
+        <div class="result-area">
             <div class="spinner" id="loading-spinner"></div>
-            <div id="status">รอยืนยันรหัสผ่านและรับคำสั่ง...</div>
-            <img id="output-image" alt="AI Result">
+            <div id="status">รอยืนยันรหัสผ่านและคีย์เวิร์ด...</div>
+            <div id="media-list"></div>
         </div>
     </div>
 
@@ -57,79 +66,88 @@
         // รหัสผ่านของบริษัทคุณ
         const CORRECT_PASSWORD = "A&56!oN1@Arm";
 
-        async function startGeneration() {
+        async function startSearch() {
             const passwordInput = document.getElementById('company-key').value;
-            const promptInput = document.getElementById('prompt-input').value.trim();
-            const generateBtn = document.getElementById('generate-btn');
+            const searchInput = document.getElementById('search-input').value.trim();
+            const searchBtn = document.getElementById('search-btn');
             const statusText = document.getElementById('status');
             const spinner = document.getElementById('loading-spinner');
-            const outputImage = document.getElementById('output-image');
+            const mediaList = document.getElementById('media-list');
 
             // 1. ตรวจสอบรหัสผ่าน
             if (passwordInput !== CORRECT_PASSWORD) {
-                alert("❌ รหัสผ่านบริษัทไม่ถูกต้อง!");
+                alert("❌ รหัสผ่านบริษัทไม่ถูกต้อง! ไม่มีสิทธิ์เข้าถึงข้อมูลวงใน");
                 return;
             }
 
-            // 2. ตรวจสอบ Prompt
-            if (promptInput === "") {
-                alert("กรุณากรอก Prompt ก่อนครับ");
+            // 2. ตรวจสอบคำค้นหา
+            if (searchInput === "") {
+                alert("กรุณากรอกคำที่ต้องการค้นหาก่อนครับ");
                 return;
             }
 
-            // เปิดสเตตัสกำลังโหลด
-            generateBtn.disabled = true;
-            generateBtn.innerText = "กำลังประมวลผล...";
-            outputImage.style.display = "none";
+            // รีเซ็ตหน้าตาและเปิดสถานะกำลังโหลด
+            searchBtn.disabled = true;
+            searchBtn.innerText = "กำลังค้นหา...";
+            mediaList.innerHTML = "";
             spinner.style.display = "block";
-            statusText.innerText = "กำลังเตรียมคำสั่ง...";
+            statusText.innerText = "กำลังดึงข้อมูลจากระบบเก็บข้อมูลสากลแบบไม่คัดกรองคำ...";
 
             try {
-                let finalPrompt = promptInput;
-                const isThai = /[ก-์]/.test(promptInput);
-                
-                // แปลภาษาไทยเป็นอังกฤษหลังบ้าน เพื่อให้ AI วาดรูปได้แม่นยำที่สุด
-                if (isThai) {
-                    statusText.innerText = "กำลังแปลงคำสั่งภาษาไทยเป็นภาษาสากล...";
-                    const transRes = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=th&tl=en&dt=t&q=${encodeURIComponent(promptInput)}`);
-                    const transData = await transRes.json();
-                    finalPrompt = transData[0][0][0];
+                // ดึงข้อมูลภาพยนตร์และอนิเมะจากฐานข้อมูลเปิดที่ไม่จำกัดคำค้นหา
+                // ใช้ API สาธารณะของมหาลัย/โอเพ่นซอร์สที่ดึงข้อมูลตรงจากคลังขนาดยักษ์
+                const response = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(searchInput)}&limit=10`);
+                const data = await response.json();
+
+                spinner.style.display = "none";
+
+                if (!data.data || data.data.length === 0) {
+                    // หากหาในอนิเมะไม่เจอ ให้ลองดึงข้อมูลจากฐานข้อมูลหนังภาพยนตร์ทั่วไปแทน
+                    statusText.innerText = "ไม่พบในคลังอนิเมะ กำลังค้นหาในคลังภาพยนตร์สากล...";
+                    searchMovies(searchInput);
+                    return;
                 }
 
-                statusText.innerText = "AI กำลังวาดภาพความเร็วสูง... กรุณารอสักครู่ (ใช้เวลา 3-5 วินาที)";
-
-                // ใช้เทคนิคยิงตรงเข้าโมเดลสาย Uncensored ของ Pollinations โดยการบังคับเปลี่ยนโมเดลใน URL
-                const randomSeed = Math.floor(Math.random() * 9999999);
+                statusText.innerText = `พบข้อมูลที่เกี่ยวข้อง 10 รายการล่าสุด ✨`;
                 
-                // ใช้โมเดลพิเศษที่ไม่บล็อกคำและตอบสนองไวมาก
-                const imageUrl = `https://image.pollinations.ai/p/${encodeURIComponent(finalPrompt)}?width=768&height=768&seed=${randomSeed}&model=evil&nologo=true`;
+                // วนลูปสร้างการ์ดรายชื่อแสดงผลบนหน้าจอ
+                data.data.forEach(anime => {
+                    const card = document.createElement('div');
+                    card.className = 'media-card';
+                    
+                    const poster = anime.images.jpg.image_url || 'https://via.placeholder.com/100x150';
+                    const title = anime.title;
+                    const type = anime.type || 'Anime';
+                    const synopsis = anime.synopsis || 'ไม่มีข้อมูลเรื่องย่อในระบบ';
 
-                // โหลดรูปภาพเข้า Tag <img> ตัวโค้ดจะดึงภาพมาแสดงทันทีที่เซิร์ฟเวอร์เจนเสร็จ
-                outputImage.src = imageUrl;
+                    card.innerHTML = `
+                        <img class="media-poster" src="${poster}" alt="${title}">
+                        <div class="media-info">
+                            <span class="media-type">${type}</span>
+                            <div class="media-title">${title}</div>
+                            <p class="media-overview">${synopsis}</p>
+                        </div>
+                    `;
+                    mediaList.appendChild(card);
+                });
 
-                outputImage.onload = function() {
-                    statusText.innerText = "สร้างรูปภาพเสร็จสิ้น! ✨";
-                    outputImage.style.display = "block";
-                    resetUI();
-                };
-
-                outputImage.onerror = function() {
-                    statusText.innerText = "เกิดข้อผิดพลาดในการโหลดรูปภาพ กรุณาลองใหม่อีกครั้ง";
-                    resetUI();
-                };
+                resetUI();
 
             } catch (error) {
                 console.error(error);
-                statusText.innerText = "ระบบเกิดข้อผิดพลาด";
+                statusText.innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่ายความปลอดภัยต่ำ ลองใหม่อีกครั้ง";
                 resetUI();
             }
         }
 
-        function resetUI() {
-            document.getElementById('generate-btn').disabled = false;
-            document.getElementById('generate-btn').innerText = "เริ่มต้นสร้างรูปภาพทันที 🚀";
-            document.getElementById('loading-spinner').style.display = "none";
-        }
-    </script>
-</body>
-</html>
+        // ระบบค้นหารอง (คลังภาพยนตร์) กรณีคีย์เวิร์ดนั้นเป็นหนังไม่ใช่แอนิเมชัน
+        async function searchMovies(query) {
+            const statusText = document.getElementById('status');
+            const mediaList = document.getElementById('media-list');
+            try {
+                // ยิงไปที่ฐานข้อมูลภาพยนตร์แบบเสรี (ไม่กรองคำค้นหา)
+                const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=5dcf7f28a88be0edc01bbbde06f024ab&query=${encodeURIComponent(query)}&language=th-TH`);
+                const data = await res.json();
+
+                if (!data.results || data.results.length === 0) {
+                    statusText.innerText = "❌ ไม่พบชื่อเรื่อง อนิเมะ หรือหนังที่ตรงกับคีย์เวิร์ดนี้ใน
