@@ -3,225 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company AI Image Generator</title>
+    <title>Company Private AI (Uncensored)</title>
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            background-color: #1e293b;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-            border: 1px solid #334155;
-        }
-        .badge {
-            background-color: #38bdf8;
-            color: #0f172a;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 4px 12px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-        h1 {
-            margin: 0 0 10px 0;
-            font-size: 26px;
-            color: white;
-        }
-        p.subtitle {
-            color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #334155;
-            border-radius: 8px;
-            background-color: #0f172a;
-            color: white;
-            font-size: 16px;
-            margin-bottom: 15px;
-            outline: none;
-            transition: 0.3s;
-        }
-        input[type="text"]:focus {
-            border-color: #38bdf8;
-        }
-        button {
-            width: 100%;
-            background-color: #38bdf8;
-            color: #0f172a;
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        button:hover {
-            background-color: #0ea5e9;
-            transform: translateY(-1px);
-        }
-        button:disabled {
-            background-color: #64748b;
-            cursor: not-allowed;
-        }
-        .result-box {
-            margin-top: 25px;
-            min-height: 300px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px dashed #334155;
-            border-radius: 8px;
-            background-color: #0f172a;
-            position: relative;
-            overflow: hidden;
-        }
-        #output-image {
-            max-width: 100%;
-            height: auto;
-            display: none;
-            border-radius: 6px;
-        }
-        .loading-box {
-            display: none;
-            color: #94a3b8;
-            font-size: 15px;
-        }
-        .spinner {
-            border: 4px solid rgba(255,255,255,0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: #38bdf8;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px auto;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        #translation-note {
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 10px;
-            text-align: left;
-            display: none;
-        }
+        /* สไตล์หน้าตาเน้นความเรียบหรู ดุดัน เหมาะกับระบบภายใน */
+        body { font-family: sans-serif; background-color: #0b0f19; color: #e2e8f0; text-align: center; padding: 40px; }
+        .box { max-width: 600px; margin: 0 auto; background: #111827; padding: 30px; border-radius: 12px; border: 1px solid #1f2937; }
+        input, button { width: 100%; padding: 14px; margin-top: 10px; border-radius: 6px; border: none; font-size: 16px; box-sizing: border-box; }
+        input { background: #1f2937; color: white; }
+        button { background: #10b981; color: white; font-weight: bold; cursor: pointer; }
+        button:hover { background: #059669; }
+        .img-container { margin-top: 20px; border: 2px dashed #374151; min-height: 300px; display: flex; justify-content: center; align-items: center; }
+        img { max-width: 100%; display: none; border-radius: 6px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="badge">Internal Tool</div>
-        <h1>Enterprise AI Image Generator</h1>
-        <p class="subtitle">พิมพ์ไอเดียหรือสิ่งที่คุณต้องการ (รองรับทั้งภาษาไทยและอังกฤษ) ระบบจะเสกรูปให้ทันที</p>
-        
-        <input type="text" id="prompt-input" placeholder="เช่น: แก้วกาแฟมินิมอลตั้งอยู่บนโต๊ะทำงานตอนเช้า แสงแดดส่องอ่อนๆ">
-        <button id="generate-btn" onclick="startProcess()">สร้างรูปภาพสำหรับธุรกิจ ✨</button>
+<div class="box">
+    <h2>🔒 Enterprise Private AI</h2>
+    <p style="color: #9ca3af; font-size: 14px;">ระบบเจนภาพภายในองค์กร (ไม่มีการตรวจจับคำและเป็นความลับส่วนตัว)</p>
+    
+    <input type="text" id="prompt" placeholder="พิมพ์ไอเดียที่ต้องการสร้างสรรค์ที่นี่...">
+    <button onclick="generatePrivateImage()">สร้างภาพอิสระ ✨</button>
 
-        <div id="translation-note"></div>
-
-        <div class="result-box">
-            <span id="placeholder-text" style="color: #64748b;">รูปภาพที่สร้างจะแสดงตรงนี้</span>
-            
-            <div id="loading-status" class="loading-box">
-                <div class="spinner"></div>
-                <span id="loading-text">กำลังประมวลผลคำสั่ง...</span>
-            </div>
-            
-            <img id="output-image" alt="AI Generated Image">
-        </div>
+    <div class="img-container">
+        <p id="status" style="color: #6b7280;">ภาพจะแสดงตรงนี้เมื่อระบบประมวลผลเสร็จ</p>
+        <img id="result-img" alt="AI Result">
     </div>
+</div>
 
-    <script>
-        async function startProcess() {
-            const promptInput = document.getElementById('prompt-input').value.trim();
-            const generateBtn = document.getElementById('generate-btn');
-            const outputImage = document.getElementById('output-image');
-            const placeholderText = document.getElementById('placeholder-text');
-            const loadingStatus = document.getElementById('loading-status');
-            const loadingText = document.getElementById('loading-text');
-            const translationNote = document.getElementById('translation-note');
+<script>
+    async function generatePrivateImage() {
+        const promptText = document.getElementById('prompt').value;
+        const status = document.getElementById('status');
+        const img = document.getElementById('result-img');
+        
+        if(!promptText) return alert("กรุณาใส่ Prompt");
 
-            if (promptInput === "") {
-                alert("กรุณาพิมพ์สิ่งที่คุณต้องการสร้างก่อนครับ!");
-                return;
-            }
+        status.innerText = "กำลังประมวลผลผ่านช่องทางพิเศษ... ⏳";
+        img.style.display = "none";
 
-            // ล็อกปุ่มกดป้องกันการกดซ้ำ
-            generateBtn.disabled = true;
-            generateBtn.innerText = "กำลังดำเนินการ...";
-            placeholderText.style.display = "none";
-            outputImage.style.display = "none";
-            loadingStatus.style.display = "block";
-            translationNote.style.display = "none";
-
-            let finalPrompt = promptInput;
-
-            // ตรวจสอบว่าผู้ใช้พิมพ์ภาษาไทยมาหรือไม่ ถ้าใช่ให้ทำการแปลภาษา
-            const isThai = /[ก-์]/.test(promptInput);
-            if (isThai) {
-                loadingText.innerText = "กำลังแปลภาษาไทยเป็นสากลเพื่อ AI... 🌐";
-                try {
-                    // ใช้ API ฟรีในการแปลภาษาไทย -> อังกฤษ
-                    const translateUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=th&tl=en&dt=t&q=${encodeURIComponent(promptInput)}`;
-                    const response = await fetch(translateUrl);
-                    const data = await response.json();
-                    finalPrompt = data[0][0][0]; // ดึงข้อความภาษาอังกฤษที่แปลแล้ว
-                    
-                    translationNote.innerText = `💡 แปลเป็นอังกฤษให้ AI: "${finalPrompt}"`;
-                    translationNote.style.display = "block";
-                } catch (error) {
-                    console.log("Translation error, using original text.");
-                }
-            }
-
-            loadingText.innerText = "กำลังวาดรูปให้คุณ... รอสักครู่ 🎨";
-
-            // เตรียม URL สำหรับเจนรูป (ใช้ Pollinations AI ดึงภาพขนาดใหญ่ 1080x1080 เหมาะกับงานบริษัท)
-            const randomSeed = Math.floor(Math.random() * 999999);
-            const imageUrl = `https://image.pollinations.ai/p/${encodeURIComponent(finalPrompt)}?width=1080&height=1080&seed=${randomSeed}&nologo=true&enhance=true`;
-
-            // ส่งคำสั่งโหลดรูปภาพ
-            outputImage.src = imageUrl;
-
-            // เมื่อ AI วาดเสร็จและโหลดภาพสำเร็จ
-            outputImage.onload = function() {
-                loadingStatus.style.display = "none";
-                outputImage.style.display = "block";
-                generateBtn.disabled = false;
-                generateBtn.innerText = "สร้างรูปภาพสำหรับธุรกิจ ✨";
-            };
-
-            // กรณีระบบขัดข้อง
-            outputImage.onerror = function() {
-                alert("การเชื่อมต่อระบบ AI ขัดข้อง กรุณาลองใหม่อีกครั้ง");
-                loadingStatus.style.display = "none";
-                placeholderText.style.display = "block";
-                translationNote.style.display = "none";
-                generateBtn.disabled = false;
-                generateBtn.innerText = "สร้างรูปภาพสำหรับธุรกิจ ✨";
-            };
+        // หมายเหตุ: ตรงนี้คือจุดเชื่อมต่อกับ API ไร้ข้อจำกัด (เช่น Together AI หรือค่ายอื่นๆ)
+        // คุณจะต้องนำ API Key และ Endpoint มาใส่ในส่วนนี้เพื่อให้ระบบทำงานได้จริงครับ
+        
+        try {
+            // โค้ดส่วนนี้จะถูกเปลี่ยนไปยิงเข้าเซิร์ฟเวอร์ส่วนตัวของบริษัท หรือ Cloud API ที่คุณสมัครไว้
+            alert("โค้ดนี้พร้อมสำหรับเชื่อมต่อ Private API แล้ว! หากเลือกผู้ให้บริการได้แล้ว สามารถนำรหัสเชื่อมต่อมาใส่ตรงนี้ได้ทันที");
+            status.innerText = "รอการเชื่อมต่อ API Key ส่วนตัว...";
+        } catch (error) {
+            status.innerText = "เกิดข้อผิดพลาด";
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
